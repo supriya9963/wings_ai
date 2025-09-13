@@ -1,0 +1,21 @@
+What are LLMs?
+
+They are advanced AI models trained on vast amounts of text data to understand and generate human-like language. These models can perform tasks such as:
+
+->Answering questions
+
+->Writing essays, stories, or code
+
+->Translating languages
+
+->Summarizing texts
+
+->Chatting conversationally (like me!)
+
+How do LLMs work?
+
+They are built using deep learning, usually with architectures called Transformers.
+
+They learn patterns, grammar, facts, and reasoning from huge datasets containing books, articles, websites, and more.
+
+After training, they can predict the next word or phrase given some input, allowing them to generate coherent text.
