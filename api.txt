@@ -1,0 +1,44 @@
+🔹 What is an API?
+
+API stands for Application Programming Interface.
+
+It’s like a messenger that allows two different software applications to talk to each other.
+
+Defines rules and methods for how one program can request data or services from another.
+
+🔹 Example (Simple)
+
+Imagine a restaurant:
+
+You = the user.
+
+Menu = the API (list of available requests).
+
+Waiter = the API itself (delivers your request to the kitchen and brings back the food).
+
+Kitchen = the system that processes the request.
+
+So, instead of directly entering the kitchen (system internals), you use the API to get what you need.
+
+🔹 Types of APIs
+
+Web APIs – Used to exchange data over the internet (REST, GraphQL, SOAP).
+
+Library APIs – Functions inside programming libraries.
+
+OS APIs – Provided by operating systems (e.g., Windows API, Android API).
+
+Hardware APIs – Let software talk to hardware (like camera or printer APIs).
+
+🔹 Real-Life Examples
+
+Google Maps API → lets apps show maps and directions.
+
+Payment APIs (Stripe, PayPal) → handle online payments.
+
+Twitter API → lets developers fetch tweets or post automatically.
+
+OpenAI API → lets apps connect with GPT models (like ChatGPT).
+
+👉 In one line:
+An API is a set of rules that allows one software system to interact with another in a safe and structured way.
