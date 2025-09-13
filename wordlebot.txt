@@ -1,0 +1,67 @@
+🔹 WordleBot Game
+
+What it is:
+
+A program that automates or assists in playing Wordle, the 5-letter word-guessing game.
+
+Uses logic, letter frequency, and feedback to efficiently guess the correct word.
+
+Key Steps in WordleBot
+
+Register / Setup
+
+Initialize the game environment or connect to an online Wordle API.
+
+Optionally create a user profile for tracking statistics.
+
+Example: register("username") → stores user info.
+
+Create / Start a Game
+
+Start a new Wordle game session.
+
+WordleBot receives the hidden word (online) or selects a random word (offline).
+
+Example: create_game() → initializes the word list and state.
+
+Guessing Loop
+
+Bot makes a guess (e.g., “CRANE”).
+
+Receives feedback:
+
+✅ Correct letter & correct position (green)
+
+⚠️ Correct letter, wrong position (yellow)
+
+❌ Letter not in word (gray)
+
+Filters remaining possible words based on feedback.
+
+Repeats until the correct word is found or attempts run out.
+
+Optional Features
+
+Track statistics (number of wins, average attempts).
+
+Suggest hints to a human player.
+
+Automate multiple games in a loop for analysis.
+
+Uses / Applications
+
+Helps players improve strategy and reduce guesses.
+
+Study AI, logic, and decision-making algorithms.
+
+Can integrate with APIs to fetch valid word lists, submit guesses online, or simulate multiple games programmatically.
+
+In short:
+
+Register → set up user/game environment.
+
+Create Game → initialize word list and hidden word.
+
+Guessing → loop through guesses using feedback until solved.
+
+If you want, I can also write a detailed Git commit message summarizing WordleBot with register, create game, and guessing parts for your repository.
