@@ -63,3 +63,53 @@ Code Generation & Completion: Helping programmers write or debug code.
 Search & Information Retrieval: Enhancing search engines with better understanding.
 
 Education: Tutoring, explaining complex topics, language learning.
+
+🔹 Open Source LLMs
+
+Meaning: Models whose code, weights, or training process are publicly available.
+
+Examples: LLaMA (Meta, partly open), Falcon, MPT, BLOOM.
+
+Advantages:
+
+✅ Transparency → anyone can study/modify.
+
+✅ Community-driven improvements & innovation.
+
+✅ Cheaper (no vendor lock-in, often free).
+
+✅ Can be fine-tuned for specific domains.
+
+Challenges:
+
+⚠️ Requires powerful hardware & expertise to train/fine-tune.
+
+⚠️ Higher risk of misuse (spam, fake content).
+
+⚠️ Difficult to guarantee safety & data quality.
+
+🔹 Closed Source LLMs
+
+Meaning: Proprietary models where code/weights are not shared with the public.
+
+Examples: GPT-4 (OpenAI), Claude (Anthropic), Gemini (Google DeepMind).
+
+Advantages:
+
+✅ High performance & optimization (built by large research teams).
+
+✅ Easy to use (via APIs, apps, integrations).
+
+✅ Regular updates, monitoring, and security.
+
+✅ Scalable for enterprise usage.
+
+Challenges:
+
+⚠️ Black-box → no transparency into training or biases.
+
+⚠️ Expensive (subscription or API costs).
+
+⚠️ Limited customization/fine-tuning.
+
+⚠️ Vendor lock-in risk.
