@@ -62,3 +62,61 @@ Uses: File management, environment variables, system control.
 What it is: A Haskell library for JSON parsing and encoding.
 Uses: Encode/decode JSON when working with APIs or configs.
 
+
+🔹 HTTP
+
+What it is:
+
+HTTP = HyperText Transfer Protocol.
+
+It is the foundation of communication on the World Wide Web.
+
+It defines how messages are formatted and transmitted between a client (like a browser or app) and a server (like a website or API).
+
+Examples:
+
+When you visit https://example.com, your browser sends an HTTP request to the server.
+
+The server responds with an HTTP response containing the webpage content.
+
+Key Features:
+
+Stateless → Each request is independent, no memory of past requests.
+
+Works with methods like:
+
+GET → Retrieve data
+
+POST → Send data
+
+PUT → Update data
+
+DELETE → Remove data
+
+🔹 HTTP Client
+
+What it is:
+
+An HTTP client is a software/tool/library that sends HTTP requests and receives HTTP responses from a server.
+
+Examples:
+
+Web Browsers (Chrome, Firefox, Safari) → act as HTTP clients.
+
+Code Libraries (requests in Python, Wreq in Haskell, axios in JavaScript) → used in apps to call APIs.
+
+Uses:
+
+Accessing APIs (e.g., weather API, payment API).
+
+Downloading web pages.
+
+Sending form data (login forms, registrations).
+
+Automation (bots, scripts).
+
+👉 In short:
+
+HTTP = the communication protocol (rules).
+
+HTTP Client = the tool/program that uses HTTP to talk to servers.
