@@ -1,0 +1,64 @@
+🔹 JSON
+
+What it is:
+
+JSON (JavaScript Object Notation) is a lightweight, text-based data format used to represent structured data.
+
+It’s language-independent but widely supported across programming languages.
+
+Uses:
+
+Exchanging data between client and server (APIs).
+
+Configuration files (package.json, tsconfig.json).
+
+Lightweight storage for logs or app state.
+
+Cross-platform data sharing.
+
+🔹 Wreq (Haskell Library)
+
+What it is:
+
+Wreq is a Haskell HTTP client library for making web requests easily.
+
+Built on top of lower-level libraries, but provides a simpler interface.
+
+Uses:
+
+Making HTTP requests (GET, POST, PUT, DELETE).
+
+Consuming JSON APIs (often with the aeson library).
+
+Automating web-based tasks (e.g., posting data, fetching updates).
+
+Handling cookies, redirects, authentication.
+
+Web scraping.
+
+🔹 Other Common Imports
+✅ requests (Python)
+
+What it is: A Python library for making HTTP requests.
+Uses: Calling APIs, downloading web pages, sending form data.
+
+✅ numpy (Python)
+
+What it is: A numerical computing library for Python.
+Uses: Math, linear algebra, scientific calculations, working with arrays.
+
+✅ pandas (Python)
+
+What it is: A Python data analysis library.
+Uses: Handling tabular data (like Excel), data cleaning, analysis, and manipulation.
+
+✅ os / sys (Python)
+
+What it is: Built-in system libraries.
+Uses: File management, environment variables, system control.
+
+✅ aeson (Haskell)
+
+What it is: A Haskell library for JSON parsing and encoding.
+Uses: Encode/decode JSON when working with APIs or configs.
+
