@@ -19,3 +19,47 @@ They are built using deep learning, usually with architectures called Transforme
 They learn patterns, grammar, facts, and reasoning from huge datasets containing books, articles, websites, and more.
 
 After training, they can predict the next word or phrase given some input, allowing them to generate coherent text.
+
+---Types of LLMs
+
+1. Autoregressive Models
+
+How they work: Predict the next word/token based on previous words.
+
+Examples: GPT series (GPT-2, GPT-3, GPT-4).
+
+Usage: Great for text generation, storytelling, coding, chatbots.
+
+2. Masked Language Models (MLM)
+
+How they work: Predict missing words in a sentence where some tokens are masked.
+
+Examples: BERT, RoBERTa.
+
+Usage: Mainly for understanding tasks like sentiment analysis, question answering, text classification.
+
+3. Encoder-Decoder Models (Seq2Seq)
+
+How they work: Use an encoder to understand input and a decoder to generate output.
+
+Examples: T5, BART.
+
+Usage: Translation, summarization, text generation.
+
+---Common Uses of LLMs
+
+Chatbots & Virtual Assistants: Answering questions, holding conversations.
+
+Content Creation: Writing articles, poetry, code, emails.
+
+Translation: Translating text from one language to another.
+
+Summarization: Creating concise summaries of long documents.
+
+Sentiment Analysis: Detecting emotions or opinions in text.
+
+Code Generation & Completion: Helping programmers write or debug code.
+
+Search & Information Retrieval: Enhancing search engines with better understanding.
+
+Education: Tutoring, explaining complex topics, language learning.
