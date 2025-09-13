@@ -1,0 +1,55 @@
+-- What is SBT?
+
+->SBT (Simple Build Tool / Scala Build Tool) is the official build tool for Scala projects, also supports Java.
+
+->Similar to Maven or Gradle (used in Java), but designed with Scala’s flexibility in mind.
+
+->Helps automate tasks like compiling code, running tests, packaging, dependency management, and deployment.
+
+--- Key Features of SBT
+
+1.Incremental Compilation
+
+->Only recompiles the changed files instead of rebuilding everything.
+
+->Makes builds faster.
+
+2.Dependency Management
+
+->Uses Ivy or Maven repositories to fetch external libraries.
+
+->You just declare dependencies in build.sbt, SBT downloads them automatically.
+
+-3.Multi-Project Builds
+
+->You can manage multiple sub-projects in one build.
+
+->Useful for large applications with modular design.
+
+4.Interactive Shell
+
+->You can run sbt in the terminal to get an interactive shell.
+
+->Commands like compile, run, test, clean are executed inside this shell.
+
+5.Cross-Building
+
+->Can build for multiple versions of Scala at the same time.
+
+6.Customization
+
+->You can define custom tasks and plugins in build.sbt.
+
+---- Common SBT Commands
+
+->sbt compile → Compiles the source code.
+
+->sbt run → Runs the main application.
+
+->sbt test → Runs tests.
+
+->sbt clean → Cleans compiled files.
+
+->sbt package → Creates a JAR file of your project.
+
+sbt console → Opens a Scala REPL with your project’s dependencies loaded.
