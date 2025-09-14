@@ -1,0 +1,46 @@
+admindell@admindell-Dell-G15-5530:~/wingsai/wings_ai$ sbt run
+[info] welcome to sbt 1.11.6 (Ubuntu Java 21.0.8)
+[info] loading project definition from /home/admindell/wingsai/wings_ai/project
+[info] loading settings for project root from build.sbt...
+[info] set current project to wordle-solver (in build file:/home/admindell/wingsai/wings_ai/)
+[info] compiling 1 Scala source to /home/admindell/wingsai/wings_ai/target/scala-3.3.1/classes ...
+[info] running WordleSolver 
+Registered player 'supriya' with ID: dd78e50c-9148-11f0-a818-56000558e151
+For every guessed word, the server provides feedback.
+   g = Green (correct letter, correct position)
+   y = Yellow (correct letter, wrong position)
+   r = Red (letter not in the word)
+📝 Starting a new simulated game with secret word: ulnad
+
+Attempt 1: Is it 'spasm'?
+Feedback: rryrr
+
+Attempt 2: Is it 'aargh'?
+Feedback: yrrrr
+⚠️ Ran out of candidate words — something is wrong. Restarting simulation.
+
+Attempt 1: Is it 'misch'?
+Feedback: rrrrr
+
+Attempt 2: Is it 'exeat'?
+Feedback: rrrgr
+
+Attempt 3: Is it 'aurar'?
+Feedback: ryrgr
+⚠️ Ran out of candidate words — something is wrong. Restarting simulation.
+
+Attempt 1: Is it 'pulks'?
+Feedback: ryyrr
+
+Attempt 2: Is it 'gruel'?
+Feedback: rryry
+
+Attempt 3: Is it 'album'?
+Feedback: ygryr
+
+Attempt 4: Is it 'ulnad'?
+Feedback: ggggg
+
+🎉 The computer guessed the correct word 'ulnad' in 4 attempts!
+[success] Total time: 7 s, completed Sep 14, 2025, 2:27:38 PM
+
