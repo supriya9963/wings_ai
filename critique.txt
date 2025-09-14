@@ -1,0 +1,42 @@
+Summary of wordle.py
+
+  This script automates playing a Wordle game through an API. It logically separates the process into three main phases: player registration, game creation, and the
+  guessing cycle.
+
+  1. Player Registration
+
+   * What it is: A one-time setup step to identify the bot to the game server.
+   * How it works:
+       1. The main() function initiates this process.
+       2. It sends an HTTP POST request to the /game/register endpoint.
+       3. The request includes a JSON payload with the desired player name (e.g., {"name": "supriya"}).
+       4. The server responds with a unique `player_id`.
+       5. This player_id is crucial and is stored for all future interactions, ensuring the server knows which player is making guesses.
+
+  2. Game Creation
+
+   * What it is: The process of starting a new Wordle puzzle.
+   * How it works:
+       1. This is handled by the _start_game() method within the WordleSolver class.
+       2. It's called once at the very beginning and is also used to restart the game if the bot gets stuck or exceeds the guess limit.
+       3. It sends an HTTP POST request to the /game/create endpoint, passing the stored player_id.
+       4. This action tells the server to generate a new secret word for the bot to guess.
+       5. Simultaneously, the bot resets its internal state: the list of available_words is restored to the full dictionary, and the attempt counter is reset to zero.
+
+  3. The Guessing Cycle
+
+   * What it is: The core loop where the bot repeatedly tries to guess the secret word.
+   * How it works:
+       1. Select a Guess: The bot chooses a word from its current list of available_words. (The current strategy is to pick one at random).
+       2. Submit the Guess: It sends an HTTP POST request to the /game/guess endpoint, including the player_id and the chosen guess.
+       3. Receive Feedback: The server evaluates the guess and sends back a feedback string made of five characters:
+           * g (Green): A correct letter in the correct position.
+           * y (Yellow): A correct letter but in the wrong position.
+           * r (Red): A letter that is not in the word.
+       4. Filter the Word List: The bot uses this feedback in its _filter_words() method to eliminate words from its available_words list that don't match the feedback
+          criteria. For example, if the feedback is rgy.., it will discard all words that contain the first letter, keep only words that have the second letter in the
+          second position, keep words that have the third letter in a different position, and so on.
+       5. Check for Win: If the feedback is ggggg, the word is correct. The bot prints a success message and stops.
+       6. Repeat: If the word is not correct, the cycle repeats from step 1, but now with a much smaller and more refined list of possible words to choose from.
+
+
