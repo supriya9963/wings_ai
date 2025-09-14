@@ -1,0 +1,43 @@
+1. Improve Word Selection Strategy
+   * Current Method: The bot currently picks a random word from the list of available words (random.shuffle(self.available_words) followed by
+     self.available_words.pop(0)).
+   * Suggestion: Instead of picking a random word, a more effective strategy is to choose a word that will provide the most information to narrow down the list of
+     possibilities, regardless of whether it's a potential answer. This often involves selecting a word with common, unique letters. A good approach is to calculate a
+     score for each word based on letter frequency in the remaining available_words and pick the word with the highest score.
+
+  2. Refactor for Clarity and Maintainability
+   * Hardcoded URLs: The API endpoint URL https://wordle.we4shakthi.in is repeated.
+   * Suggestion: Store the base URL in a constant to avoid repetition and make it easier to change if the API endpoint ever changes.
+
+   1     BASE_URL = "https://wordle.we4shakthi.in"
+   2     # ... then use it like:
+   3     response = self.session.post(f"{BASE_URL}/game/create", ...)
+   * Magic Strings for Feedback: The feedback characters 'g', 'y', and 'r' are used directly in the logic.
+   * Suggestion: Use constants to represent the feedback colors to make the code more readable and less error-prone.
+
+   1     class Feedback:
+   2         CORRECT_POSITION = 'g'
+   3         CORRECT_LETTER = 'y'
+   4         INCORRECT = 'r'
+
+  3. Enhance Error Handling
+   * Network Errors: Network requests can fail for various reasons (e.g., connection timeout). The play_until_win loop could crash on a network error.
+   * Suggestion: Wrap the network requests within the while loop in a try...except requests.exceptions.RequestException block to handle potential network issues
+     gracefully without crashing the entire game.
+
+  4. Simplify the Filtering Logic
+   * Complex Filtering: The _filter_words method with its nested functions (drop_blacks, pick_greens, pick_ambers) can be a bit hard to follow.
+   * Suggestion: You could refactor this into a single loop or a more streamlined set of list comprehensions. While the current approach works, a refactor could
+     improve readability. For example, the logic for blacks (red letters) could be more nuanced. If a letter is marked 'r', it means it's not in the word at all,
+     unless that same letter also appears as a 'g' or 'y' in the feedback. The current logic for blacks is a bit too simple and might incorrectly filter out valid
+     words.
+
+  5. Add More Comprehensive Docstrings and Type Hinting
+   * Clarity: While there are docstrings, they could be more detailed, especially for _filter_words, explaining the logic for handling green, yellow, and red letters.
+   * Suggestion: Expand the docstrings to explain why the logic is implemented the way it is. Also, adding more specific type hints (e.g., for the session object) can
+     improve code clarity and allow for better static analysis.
+
+  By implementing these suggestions, the code would become more robust, efficient, and easier to read and maintain. The most impactful change would be improving the
+  word selection strategy, which would significantly reduce the number of attempts needed to win.
+
+
