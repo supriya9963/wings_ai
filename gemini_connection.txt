@@ -1,0 +1,44 @@
+Step 1: Install Node Version Manager (NVM)
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+source ~/.nvm/nvm.sh
+
+Step 2: Install Node.js (version 20)
+nvm install 20
+
+Step 3: Verify Node.js and npm installation
+node -v
+npm -v
+
+Step 4: Install Gemini CLI globally using npm
+npm install -g @google/gemini-cli
+
+
+Alternative: Run Gemini CLI instantly without installing:
+
+npx https://github.com/google-gemini/gemini-cli
+
+Step 5: Launch Gemini CLI
+gemini
+
+
+First-time steps inside Gemini:
+
+Choose your preferred theme.
+
+Authenticate with your Google account.
+
+Step 6: Use Gemini CLI interactively
+gemini
+> Your question or command here
+
+Step 7: Use Gemini CLI non-interactively
+gemini -p "Your one-line query here"
+
+Step 8: List available tools inside Gemini
+/tools
+
+Step 9: Set your Gemini API key (optional, for higher limits)
+export GEMINI_API_KEY="YOUR_API_KEY"
+
+
+To persist across sessions, add the above line to your shell config file (e.g., ~/.bashrc or ~/.zshrc).
