@@ -1,0 +1,29 @@
+Registered player 'supriya' with ID: 688ebff6-913d-11f0-a818-56000558e151
+For every guessed word, the server provides feedback.
+         g = Green (correct letter, correct position)
+         y = Yellow (correct letter, wrong position)
+         r = Red (letter not in the word)
+🔹 New game started.
+
+Attempt 1: Is it 'flake'?
+Message: 5 guesses left
+Feedback: RGYRR
+
+Attempt 2: Is it 'aliya'?
+Message: 4 guesses left
+Feedback: YGRRY
+
+Attempt 3: Is it 'gloat'?
+Message: 3 guesses left
+Feedback: RGRGR
+
+Attempt 4: Is it 'ulnas'?
+Message: 2 guesses left
+Feedback: GGGGR
+
+Attempt 5: Is it 'ulnad'?
+Message: Congrats! You win!in 5 tries
+Feedback: GGGGG
+
+🎉 The computer guessed the correct word 'ulnad' in 5 attempts!
+
