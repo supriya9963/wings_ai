@@ -1,0 +1,29 @@
+admindell@admindell-Dell-G15-5530:~/wingsai/wings_ai$ cabal run wordlebot
+Build profile: -w ghc-9.4.7 -O1
+In order, the following will be built (use -v for more details):
+ - wordlebot-0.1.0.0 (exe:wordlebot) (file app/Main.hs changed)
+Preprocessing executable 'wordlebot' for wordlebot-0.1.0.0..
+Building executable 'wordlebot' for wordlebot-0.1.0.0..
+[1 of 1] Compiling Main             ( app/Main.hs, /home/admindell/wingsai/wings_ai/dist-newstyle/build/x86_64-linux/ghc-9.4.7/wordlebot-0.1.0.0/x/wordlebot/build/wordlebot/wordlebot-tmp/Main.o ) [Source file changed]
+[2 of 2] Linking /home/admindell/wingsai/wings_ai/dist-newstyle/build/x86_64-linux/ghc-9.4.7/wordlebot-0.1.0.0/x/wordlebot/build/wordlebot/wordlebot [Objects changed]
+Loading word list...
+Starting Wordle computer guesser...
+Registration response: {"id":"e80a03f4-92f9-11f0-a818-56000558e151","message":"Created"}
+
+Game creation response: {"created":true,"message":"Created game. Now start posting to /guess"}
+
+Game created.
+Attempt 1: MAHWA
+Feedback: RYRRY
+Attempt 2: SNAPS
+Feedback: YRYRG
+Attempt 3: ARSIS
+Feedback: YRYRG
+Attempt 4: BUBAS
+Feedback: RRRGG
+Attempt 5: OKTAS
+Feedback: RRYGG
+Attempt 6: TEXAS
+Feedback: GGGGG
+The computer guessed the correct word: TEXAS!
+
