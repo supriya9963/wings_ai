@@ -171,7 +171,7 @@ main = do
 
            catch (do
                -- Registration
-               (jar, sid) <- registerPlayer manager "Vennela"
+               (jar, sid) <- registerPlayer manager "supriya"
                -- Game creation
                updatedJar <- createGame manager jar sid
                -- Automated game play

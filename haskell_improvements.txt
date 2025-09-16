@@ -1,0 +1,17 @@
+I've analyzed the Haskell code in app/Main.hs. It's a functional Wordle bot, but there are several areas for improvement to make it more robust, efficient, and
+  maintainable.
+
+  Here are my key recommendations:
+
+   1. Correct `filterWords` Logic: The current implementation for filtering words based on feedback is flawed, particularly in how it handles duplicate letters and 'R'
+      (gray/red) results. This is the most critical bug to fix for the solver to be effective.
+   2. Smarter Word Choice: The chooseBestWord function currently picks a word at random. A much more effective strategy is to analyze the remaining words, calculate
+      letter frequencies, and choose a word that is statistically most likely to eliminate the largest portion of the word list. This will significantly reduce the
+      number of guesses required.
+   3. Refactor Hardcoded Values: API endpoints and the player name are scattered as string literals throughout the code. Consolidating these into constants at the top
+      of the file will make the code cleaner and easier to configure.
+   4. Robust Error Handling: The use of error can cause the program to crash on recoverable issues like a network glitch or an unexpected JSON response. Replacing these
+      with types like Either or Maybe will lead to a more resilient application.
+   5. Standardize Function Usage: The code includes a custom toUpper function, but a standard version is available in Data.Char. Using the standard library is
+      preferable.
+
