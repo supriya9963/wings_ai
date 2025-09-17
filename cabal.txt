@@ -1,0 +1,107 @@
+1. What is Cabal?
+
+Build system and package manager for Haskell.
+
+Handles compiling code, managing dependencies, running programs, and packaging projects.
+
+Works with .cabal file containing project metadata (name, dependencies, modules, executables).
+
+2. Common Cabal Commands
+a) cabal build
+
+Compiles your Haskell project.
+
+Resolves dependencies from Hackage if needed.
+
+Stores compiled binaries in dist-newstyle.
+
+Example:
+
+cabal build
+
+b) cabal run
+
+Builds and runs an executable in one step.
+
+Can pass command-line arguments after --.
+
+Example:
+
+cabal run myapp -- arg1 arg2
+
+c) cabal repl
+
+Opens an interactive GHCi session for your project.
+
+Loads all modules and dependencies.
+
+Example:
+
+cabal repl
+cabal repl MyModule
+
+d) cabal install / cabal new-install
+
+Installs Haskell libraries/packages from Hackage.
+
+Example:
+
+cabal install text
+
+e) cabal clean
+
+Removes build artifacts for a fresh rebuild.
+
+Example:
+
+cabal clean
+
+f) cabal update
+
+Updates the list of available packages from Hackage.
+
+Example:
+
+cabal update
+
+3. How Cabal Works With Your Code
+
+Reads .cabal file to know:
+
+Executables
+
+Source directories (hs-source-dirs)
+
+Dependencies (build-depends)
+
+Builds binaries and libraries based on this configuration.
+
+cabal run → builds if needed, then runs.
+
+cabal repl → opens REPL with modules loaded.
+
+4. Typical Workflow
+
+Initialize project:
+
+cabal init
+
+
+Build project:
+
+cabal build
+
+
+Run executable:
+
+cabal run myproject
+
+
+Test in REPL:
+
+cabal repl
+
+
+Clean build artifacts:
+
+cabal clean
