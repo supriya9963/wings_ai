@@ -1,0 +1,25 @@
+-->requests
+
+--A popular HTTP library for Python.
+
+--Provides methods like requests.get() and requests.post() to send HTTP requests.
+
+--In your code:
+
+>requests.Session() maintains cookies and headers across multiple requests.
+
+>Used for communicating with the Wordle server (/register, /create, /guess).
+
+>Handles sending JSON payloads and parsing JSON responses.
+
+--->random
+
+--Python’s built-in module for randomness.
+
+--Provides functions like random.shuffle(), random.choice().
+
+--->In your code:
+
+>random.shuffle(self.available_words) randomizes the order of candidate words before guessing.
+
+>Ensures guesses are not always made in the same fixed order.
