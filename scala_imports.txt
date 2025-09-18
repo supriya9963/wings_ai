@@ -1,0 +1,53 @@
+Scala Standard Library
+
+import scala.io.Source
+→ Read files or input streams easily (used for loading 5words.txt).
+
+import scala.util.{Failure, Success, Try}
+→ Handle computations that may succeed or fail without exceptions (Try, Success, Failure).
+
+import scala.concurrent.ExecutionContext.Implicits.global
+→ Provides a default thread pool for running asynchronous tasks (needed by Pekko HTTP).
+
+import scala.concurrent.Await
+→ Block on Future results until they are ready.
+
+import scala.concurrent.duration._
+→ Adds time units like 10.seconds for Await timeout.
+
+import scala.util.Random
+→ Generate random values (used here for shuffling word list and picking guesses).
+
+import scala.collection.mutable.{Map as MutableMap}
+→ Import a mutable map, aliased as MutableMap (used for storing amber letters with their positions).
+
+🔹 Pekko HTTP (Apache Pekko, a fork of Akka HTTP)
+
+import org.apache.pekko.http.scaladsl.Http
+→ Core HTTP client/server API (used for sending requests).
+
+import org.apache.pekko.http.scaladsl.client.RequestBuilding.Post
+→ Helper for building POST requests.
+
+import org.apache.pekko.http.scaladsl.model.{ContentTypes, HttpEntity, HttpMethods, HttpRequest, HttpResponse}
+→ Classes to define HTTP requests and responses, including body (HttpEntity) and type (ContentTypes).
+
+import org.apache.pekko.actor.{ActorSystem, ClassicActorSystemProvider}
+→ Required runtime environment for Pekko (actors and system context).
+
+import org.apache.pekko.http.scaladsl.model.headers.{Cookie, RawHeader}
+→ Support for handling HTTP headers, including cookies and custom headers.
+
+🔹 Circe (JSON parsing/encoding)
+
+import io.circe.parser._
+→ JSON parsing (decode) functions.
+
+import io.circe.generic.auto._
+→ Auto-derive encoders/decoders for case classes.
+
+import io.circe.syntax._
+→ Adds .asJson syntax to convert case classes into JSON.
+
+import io.circe.{Decoder, Encoder, Json}
+→ Core JSON encoder/decoder types.
