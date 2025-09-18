@@ -1,0 +1,41 @@
+GenServer
+
+OTP behaviour for building concurrent server processes.
+
+Handles initialization (init/1), async messages (handle_cast/2), and process state.
+
+In your code → manages game state (player ID, cookie, word list).
+
+Logger
+
+Provides logging macros for runtime info, warnings, and errors.
+
+Helps debug the solver and track progress.
+
+In your code → logs registration, game creation, guesses, errors.
+
+HTTPoison
+
+HTTP client library for sending requests and handling responses.
+
+Used for POST requests to /register, /create, /guess.
+
+In your code → sends JSON requests to Wordle server, handles status codes.
+
+Jason
+
+Fast JSON library for Elixir.
+
+Encodes Elixir maps → JSON strings (for requests).
+
+Decodes JSON strings → Elixir maps (for responses).
+
+In your code → encodes player registration, decodes API responses.
+
+File
+
+Standard library module for file I/O.
+
+Reads contents of 5words.txt to get candidate guess words.
+
+In your code → loads words list into memory for guessing loop.
