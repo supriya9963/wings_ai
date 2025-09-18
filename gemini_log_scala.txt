@@ -1,0 +1,870 @@
+ ███            █████████  ██████████ ██████   ██████ █████ ██████   █████ █████
+░░░███         ███░░░░░███░░███░░░░░█░░██████ ██████ ░░███ ░░██████ ░░███ ░░███
+  ░░░███      ███     ░░░  ░███  █ ░  ░███░█████░███  ░███  ░███░███ ░███  ░███
+    ░░░███   ░███          ░██████    ░███░░███ ░███  ░███  ░███░░███░███  ░███
+     ███░    ░███    █████ ░███░░█    ░███ ░░░  ░███  ░███  ░███ ░░██████  ░███
+   ███░      ░░███  ░░███  ░███ ░   █ ░███      ░███  ░███  ░███  ░░█████  ░███
+ ███░         ░░█████████  ██████████ █████     █████ █████ █████  ░░█████ █████
+░░░            ░░░░░░░░░  ░░░░░░░░░░ ░░░░░     ░░░░░ ░░░░░ ░░░░░    ░░░░░ ░░░░░
+
+Tips for getting started:
+1. Ask questions, edit files, or run commands.
+2. Be specific for the best results.
+3. Create GEMINI.md files to customize your interactions with Gemini.
+4. /help for more information.
+
+╭───────────────────────────────────────────────────────────────────────────────╮
+│  > read wordle.py | convert the code into scala3 and test it and give output  │
+╰───────────────────────────────────────────────────────────────────────────────╯
+
+ ╭───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+ │ ✔  ReadFile wordle.py                                                                                                                                                 │
+ ╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+ ╭───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+ │ ✔  ReadFile build.sbt                                                                                                                                                 │
+ ╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+ ╭───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+ │ ✔  WriteFile Writing to wordle.scala                                                                                                                                  │
+ │                                                                                                                                                                       │
+ │    ... first 5 lines hidden ...                                                                                                                                       │
+ │      6 import scala.concurrent.{Await, Future}                                                                                                                        │
+ │      7 import scala.concurrent.duration._                                                                                                                             │
+ │      8 import scala.io.Source                                                                                                                                         │
+ │      9 import scala.util.Random                                                                                                                                       │
+ │     10 import io.circe.generic.auto._                                                                                                                                 │
+ │     11 import io.circe.parser._                                                                                                                                       │
+ │     12 import io.circe.syntax._                                                                                                                                       │
+ │     13                                                                                                                                                                │
+ │     14 case class CreateGameRequest(id: String, overwrite: Boolean)                                                                                                   │
+ │     15 case class GuessRequest(guess: String, id: String)                                                                                                             │
+ │     16 case class RegisterRequest(mode: String, name: String)                                                                                                         │
+ │     17 case class RegisterResponse(id: String)                                                                                                                        │
+ │     18 case class GuessResponse(feedback: String, message: String)                                                                                                    │
+ │     19                                                                                                                                                                │
+ │     20 object WordleSolver extends App {                                                                                                                              │
+ │     21   val instructions = """For every guessed word, the server provides feedback.                                                                                  │
+ │     22          g = Green (correct letter, correct position)                                                                                                          │
+ │     23          y = Yellow (correct letter, wrong position)                                                                                                           │
+ │     24          r = Red (letter not in the word)"""                                                                                                                   │
+ │     25                                                                                                                                                                │
+ │     26   implicit val system = ActorSystem()                                                                                                                          │
+ │     27   implicit val executionContext = system.dispatcher                                                                                                            │
+ │     28                                                                                                                                                                │
+ │     29   def sendRequest(request: HttpRequest): Future[String] = {                                                                                                    │
+ │     30     val responseFuture = Http().singleRequest(request)                                                                                                         │
+ │     31     responseFuture.flatMap(response => Unmarshal(response.entity).to[String])                                                                                  │
+ │     32   }                                                                                                                                                            │
+ │     33                                                                                                                                                                │
+ │     34   class WordleSolver(session: HttpExt, player_id: String, allWords: List[String]) {                                                                            │
+ │     35     var availableWords = allWords                                                                                                                              │
+ │     36     var attemptNum = 0                                                                                                                                         │
+ │     37     var status = "PLAY"                                                                                                                                        │
+ │     38     var guess = ""                                                                                                                                             │
+ │     39                                                                                                                                                                │
+ │     40     def startGame(): Unit = {                                                                                                                                  │
+ │     41       val createGameRequest = CreateGameRequest(player_id, true).asJson.noSpaces                                                                               │
+ │     42       val request = HttpRequest(                                                                                                                               │
+ │     43         method = HttpMethods.POST,                                                                                                                             │
+ │     44         uri = "https://wordle.we4shakthi.in/game/create",                                                                                                      │
+ │     45         entity = HttpEntity(ContentTypes.`application/json`, createGameRequest)                                                                                │
+ │     46       )                                                                                                                                                        │
+ │     47       val responseFuture = sendRequest(request)                                                                                                                │
+ │     48       val responseBody = Await.result(responseFuture, 10.seconds)                                                                                              │
+ │     49       println("🔹 New game started.")                                                                                                                          │
+ │     50       availableWords = allWords                                                                                                                                │
+ │     51       attemptNum = 0                                                                                                                                           │
+ │     52       status = "PLAY"                                                                                                                                          │
+ │     53     }                                                                                                                                                          │
+ │     54                                                                                                                                                                │
+ │     55     def filterWords(feedback: String): Unit = {                                                                                                                │
+ │     56       def dropBlacks(blacks: String, word: String): Boolean = {                                                                                                │
+ │     57         blacks.forall(b => !word.contains(b))                                                                                                                  │
+ │     58       }                                                                                                                                                        │
+ │     59                                                                                                                                                                │
+ │     60       def pickGreens(greens: Array[Char], word: String): Boolean = {                                                                                           │
+ │     61         greens.zipWithIndex.forall { case (g, i) =>                                                                                                            │
+ │     62           g == ' ' || word(i) == g                                                                                                                             │
+ │     63         }                                                                                                                                                      │
+ │     64       }                                                                                                                                                        │
+ │     65                                                                                                                                                                │
+ │     66       def pickAmbers(ambers: Map[Char, List[Int]], word: String): Boolean = {                                                                                  │
+ │     67         ambers.forall { case (ch, badPos) =>                                                                                                                   │
+ │     68           word.contains(ch) && badPos.forall(pos => word(pos) != ch)                                                                                           │
+ │     69         }                                                                                                                                                      │
+ │     70       }                                                                                                                                                        │
+ │     71                                                                                                                                                                │
+ │     72       val greens = Array.fill(5)(' ')                                                                                                                          │
+ │     73       var blacks = ""                                                                                                                                          │
+ │     74       var ambers = Map[Char, List[Int]]()                                                                                                                      │
+ │     75                                                                                                                                                                │
+ │     76       for (i <- 0 until 5) {                                                                                                                                   │
+ │     77         val letter = feedback(i).toLower                                                                                                                       │
+ │     78         val guessChar = guess(i)                                                                                                                               │
+ │     79         if (letter == 'g') {                                                                                                                                   │
+ │     80           greens(i) = guessChar                                                                                                                                │
+ │     81         } else if (letter == 'y') {                                                                                                                            │
+ │     82           ambers = ambers.updated(guessChar, ambers.getOrElse(guessChar, List()) :+ i)                                                                         │
+ │     83         } else if (letter == 'r') {                                                                                                                            │
+ │     84           blacks += guessChar                                                                                                                                  │
+ │     85         }                                                                                                                                                      │
+ │     86       }                                                                                                                                                        │
+ │     87                                                                                                                                                                │
+ │     88       availableWords = availableWords.filter(word =>                                                                                                           │
+ │     89         dropBlacks(blacks, word) && pickGreens(greens, word) && pickAmbers(ambers, word)                                                                       │
+ │     90       )                                                                                                                                                        │
+ │     91     }                                                                                                                                                          │
+ │     92                                                                                                                                                                │
+ │     93     def playUntilWin(): Unit = {                                                                                                                               │
+ │     94       println(instructions)                                                                                                                                    │
+ │     95       startGame()                                                                                                                                              │
+ │     96                                                                                                                                                                │
+ │     97       while (status != "WON") {                                                                                                                                │
+ │     98         if (availableWords.isEmpty) {                                                                                                                          │
+ │     99           println("⚠️ Ran out of candidate words — restarting game.")                                                                                          │
+ │    100           startGame()                                                                                                                                          │
+ │    101         } else {                                                                                                                                               │
+ │    102           guess = Random.shuffle(availableWords).head                                                                                                          │
+ │    103           availableWords = availableWords.tail                                                                                                                 │
+ │    104           attemptNum += 1                                                                                                                                      │
+ │    105           println(s"\nAttempt $attemptNum: Is it '$guess'?")                                                                                                   │
+ │    106                                                                                                                                                                │
+ │    107           val guessRequest = GuessRequest(guess, player_id).asJson.noSpaces                                                                                    │
+ │    108           val request = HttpRequest(                                                                                                                           │
+ │    109             method = HttpMethods.POST,                                                                                                                         │
+ │    110             uri = "https://wordle.we4shakthi.in/game/guess",                                                                                                   │
+ │    111             entity = HttpEntity(ContentTypes.`application/json`, guessRequest)                                                                                 │
+ │    112           )                                                                                                                                                    │
+ │    113           val responseFuture = sendRequest(request)                                                                                                            │
+ │    114           val responseBody = Await.result(responseFuture, 10.seconds)                                                                                          │
+ │    115                                                                                                                                                                │
+ │    116           decode[GuessResponse](responseBody) match {                                                                                                          │
+ │    117             case Right(result) =>                                                                                                                              │
+ │    118               val feedback = result.feedback                                                                                                                   │
+ │    119               val message = result.message                                                                                                                     │
+ │    120               println(s"Message: $message")                                                                                                                    │
+ │    121                                                                                                                                                                │
+ │    122               if (message.toLowerCase.contains("exceeded") || message.toLowerCase.contains("no game")) {                                                       │
+ │    123                 println("🔁 Restarting a new game due to server limit.")                                                                                       │
+ │    124                 startGame()                                                                                                                                    │
+ │    125               } else if (feedback == null || feedback.length != 5) {                                                                                           │
+ │    126                 println("⚠️ Invalid feedback, skipping...")                                                                                                    │
+ │    127               } else {                                                                                                                                         │
+ │    128                 println(s"Feedback: $feedback")                                                                                                                │
+ │    129                 if (feedback.toLowerCase == "ggggg") {                                                                                                         │
+ │    130                   println(s"\n🎉 The computer guessed the correct word '$guess' in $attemptNum attempts!")                                                     │
+ │    131                   status = "WON"                                                                                                                               │
+ │    132                 } else {                                                                                                                                       │
+ │    133                   filterWords(feedback.toLowerCase)                                                                                                            │
+ │    134                 }                                                                                                                                              │
+ │    135               }                                                                                                                                                │
+ │    136             case Left(error) =>                                                                                                                                │
+ │    137               println(s"❌ Error decoding JSON:  $error")                                                                                                       │
+ │    138           }                                                                                                                                                    │
+ │    139         }                                                                                                                                                      │
+ │    140       }                                                                                                                                                        │
+ │    141     }                                                                                                                                                          │
+ │    142   }                                                                                                                                                            │
+ │    143                                                                                                                                                                │
+ │    144   val playerName = "supriya"                                                                                                                                   │
+ │    145   val allWords = Source.fromFile("5words.txt").getLines().filter(_.trim.length == 5).toList                                                                    │
+ │    146                                                                                                                                                                │
+ │    147   val registerRequest = RegisterRequest("wordle", playerName).asJson.noSpaces                                                                                  │
+ │    148   val request = HttpRequest(                                                                                                                                   │
+ │    149     method = HttpMethods.POST,                                                                                                                                 │
+ │    150     uri = "https://wordle.we4shakthi.in/game/register",                                                                                                        │
+ │    151     entity = HttpEntity(ContentTypes.`application/json`, registerRequest)                                                                                      │
+ │    152   )                                                                                                                                                            │
+ │    153   val responseFuture = sendRequest(request)                                                                                                                    │
+ │    154   val responseBody = Await.result(responseFuture, 10.seconds)                                                                                                  │
+ │    155                                                                                                                                                                │
+ │    156   decode[RegisterResponse](responseBody) match {                                                                                                               │
+ │    157     case Right(registerResponse) =>                                                                                                                            │
+ │    158       val playerId = registerResponse.id                                                                                                                       │
+ │    159       println(s"Registered player '$playerName' with ID: $playerId")                                                                                           │
+ │    160       val game = new WordleSolver(Http(), playerId, allWords)                                                                                                  │
+ │    161       game.playUntilWin()                                                                                                                                      │
+ │    162       system.terminate()                                                                                                                                       │
+ │    163     case Left(error) =>                                                                                                                                        │
+ │    164       println(s"Could not get player ID from server: $error")                                                                                                  │
+ │    165       system.terminate()                                                                                                                                       │
+ │    166   }                                                                                                                                                            │
+ │    167 }                                                                                                                                                              │
+ ╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+ ╭───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+ │ ✔  Shell sbt run                                                                                                                                                      │
+ │                                                                                                                                                                       │
+ │    [info] welcome to sbt 1.11.6 (Ubuntu Java 21.0.8)                                                                                                                  │
+ │    [info] loading project definition from /home/admindell/wingsai/wings_ai/project                                                                                    │
+ │    [info] loading settings for project root from build.sbt...                                                                                                         │
+ │    [info] set current project to wordle-solver (in build file:/home/admindell/wingsai/wings_ai/)                                                                      │
+ │    [info] compiling 1 Scala source to /home/admindell/wingsai/wings_ai/target/scala-3.3.1/classes ...                                                                 │
+ │    [error] -- Error: /home/admindell/wingsai/wings_ai/wordle.scala:26:15 ------------------                                                                           │
+ │    [error] 26 |  implicit val system = ActorSystem()                                                                                                                  │
+ │    [error]    |               ^                                                                                                                                       │
+ │    [error]    |               type of implicit definition needs to be given explicitly                                                                                │
+ │    [error] -- Error: /home/admindell/wingsai/wings_ai/wordle.scala:27:15 ------------------                                                                           │
+ │    [error] 27 |  implicit val executionContext = system.dispatcher                                                                                                    │
+ │    [error]    |               ^                                                                                                                                       │
+ │    [error]    |               type of implicit definition needs to be given explicitly                                                                                │
+ │    [error] -- [E006] Not Found Error: /home/admindell/wingsai/wings_ai/wordle.scala:34:30 -                                                                           │
+ │    [error] 34 |  class WordleSolver(session: HttpExt, player_id: String, allWords: List[String]) {                                                                    │
+ │    [error]    |                              ^^^^^^^                                                                                                                  │
+ │    [error]    |                              Not found: type HttpExt                                                                                                  │
+ │    [error]    |                                                                                                                                                       │
+ │    [error]    | longer explanation available when compiling with `-explain`                                                                                           │
+ │    [error] -- [E172] Type Error: /home/admindell/wingsai/wings_ai/wordle.scala:30:31 ------                                                                           │
+ │    [error] 30 |    val responseFuture = Http().singleRequest(request)                                                                                                 │
+ │    [error]    |                               ^                                                                                                                       │
+ │    [error]    |No given instance of type org.apache.pekko.actor.ClassicActorSystemProvider was found for parameter system of method apply in object Http              │
+ │    [error] -- [E172] Type Error: /home/admindell/wingsai/wings_ai/wordle.scala:160:40 -----                                                                           │
+ │    [error] 160 |      val game = new WordleSolver(Http(), playerId, allWords)                                                                                         │
+ │    [error]     |                                        ^                                                                                                             │
+ │    [error]     |No given instance of type org.apache.pekko.actor.ClassicActorSystemProvider was found for parameter system of method apply in object Http             │
+ │    [error] 5 errors found                                                                                                                                             │
+ │    [error] (Compile / compileIncremental) Compilation failed                                                                                                          │
+ │    [error] Total time: 7 s, completed Sep 18, 2025, 3:24:10 PM                                                                                                        │
+ │                                                                                                                                                                       │
+ ╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+ ╭───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+ │ ✔  WriteFile Writing to wordle.scala                                                                                                                                  │
+ │                                                                                                                                                                       │
+ │      1 -                                                                                                                                                              │
+ │      1   import org.apache.pekko.actor.ActorSystem                                                                                                                    │
+ │      2   import org.apache.pekko.http.scaladsl.Http                                                                                                                   │
+ │      3   import org.apache.pekko.http.scaladsl.model._                                                                                                                │
+ │      9   import io.circe.generic.auto._                                                                                                                               │
+ │     10   import io.circe.parser._                                                                                                                                     │
+ │     11   import io.circe.syntax._                                                                                                                                     │
+ │     12 + import scala.concurrent.ExecutionContext                                                                                                                     │
+ │     13                                                                                                                                                                │
+ │     14   case class CreateGameRequest(id: String, overwrite: Boolean)                                                                                                 │
+ │     15   case class GuessRequest(guess: String, id: String)                                                                                                           │
+ │    ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════            │
+ │     23            y = Yellow (correct letter, wrong position)                                                                                                         │
+ │     24            r = Red (letter not in the word)"""                                                                                                                 │
+ │     25                                                                                                                                                                │
+ │     26 -   implicit val system = ActorSystem()                                                                                                                        │
+ │     27 -   implicit val executionContext = system.dispatcher                                                                                                          │
+ │     26 +   implicit val system: ActorSystem = ActorSystem()                                                                                                           │
+ │     27 +   implicit val executionContext: ExecutionContext = system.dispatcher                                                                                        │
+ │     28                                                                                                                                                                │
+ │     29     def sendRequest(request: HttpRequest): Future[String] = {                                                                                                  │
+ │     30       val responseFuture = Http().singleRequest(request)                                                                                                       │
+ │     31       responseFuture.flatMap(response => Unmarshal(response.entity).to[String])                                                                                │
+ │     32     }                                                                                                                                                          │
+ │     33                                                                                                                                                                │
+ │     34 -   class WordleSolver(session: HttpExt, player_id: String, allWords: List[String]) {                                                                          │
+ │     34 +   class WordleSolver(session: Http.type, player_id: String, allWords: List[String]) {                                                                        │
+ │     35       var availableWords = allWords                                                                                                                            │
+ │     36       var attemptNum = 0                                                                                                                                       │
+ │     37       var status = "PLAY"                                                                                                                                      │
+ │    ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════            │
+ │    157       case Right(registerResponse) =>                                                                                                                          │
+ │    158         val playerId = registerResponse.id                                                                                                                     │
+ │    159         println(s"Registered player '$playerName' with ID: $playerId")                                                                                         │
+ │    160 -       val game = new WordleSolver(Http(), playerId, allWords)                                                                                                │
+ │    160 +       val game = new WordleSolver(Http, playerId, allWords)                                                                                                  │
+ │    161         game.playUntilWin()                                                                                                                                    │
+ │    162         system.terminate()                                                                                                                                     │
+ │    163       case Left(error) =>                                                                                                                                      │
+ ╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+ ╭───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+ │ ✔  Shell sbt run                                                                                                                                                      │
+ │                                                                                                                                                                       │
+ │    [info] welcome to sbt 1.11.6 (Ubuntu Java 21.0.8)                                                                                                                  │
+ │    [info] loading project definition from /home/admindell/wingsai/wings_ai/project                                                                                    │
+ │    [info] loading settings for project root from build.sbt...                                                                                                         │
+ │    [info] set current project to wordle-solver (in build file:/home/admindell/wingsai/wings_ai/)                                                                      │
+ │    [info] compiling 1 Scala source to /home/admindell/wingsai/wings_ai/target/scala-3.3.1/classes ...                                                                 │
+ │    [info] done compiling                                                                                                                                              │
+ │    [info] compiling 2 Scala sources to /home/admindell/wingsai/wings_ai/target/scala-3.3.1/classes ...                                                                │
+ │    [error] -- [E161] Naming Error: /home/admindell/wingsai/wings_ai/wordle.scala:20:0 -----                                                                           │
+ │    [error] 20 |object WordleSolver extends App {                                                                                                                      │
+ │    [error]    |^                                                                                                                                                      │
+ │    [error]    |WordleSolver is already defined as object WordleSolver in /home/admindell/wingsai/wings_ai/src/main/scala/wordle.scala                                 │
+ │    [error] -- [E049] Reference Error: /home/admindell/wingsai/wings_ai/wordle.scala:27:52 -                                                                           │
+ │    [error] 27 |  implicit val executionContext: ExecutionContext = system.dispatcher                                                                                  │
+ │    [error]    |                                                    ^^^^^^                                                                                             │
+ │    [error]    |                     Reference to system is ambiguous.                                                                                                 │
+ │    [error]    |                     It is both defined in object WordleSolver$2                                                                                       │
+ │    [error]    |                     and inherited subsequently in object WordleSolver$2                                                                               │
+ │    [error]    |                                                                                                                                                       │
+ │    [error]    | longer explanation available when compiling with `-explain`                                                                                           │
+ │    [error] -- [E172] Type Error: /home/admindell/wingsai/wings_ai/wordle.scala:31:77 ------                                                                           │
+ │    [error] 31 |    responseFuture.flatMap(response => Unmarshal(response.entity).to[String])                                                                          │
+ │    [error]    |                                                                             ^                                                                         │
+ │    [error]    |Cannot find an implicit ExecutionContext. You might add                                                                                                │
+ │    [error]    |an (implicit ec: ExecutionContext) parameter to your method.                                                                                           │
+ │    [error]    |                                                                                                                                                       │
+ │    [error]    |The ExecutionContext is used to configure how and on which                                                                                             │
+ │    [error]    |thread pools asynchronous tasks (such as Futures) will run,                                                                                            │
+ │    [error]    |so the specific ExecutionContext that is selected is important.                                                                                        │
+ │    [error]    |                                                                                                                                                       │
+ │    [error]    |If your application does not define an ExecutionContext elsewhere,                                                                                     │
+ │    [error]    |consider using Scala's global ExecutionContext by defining                                                                                             │
+ │    [error]    |the following:                                                                                                                                         │
+ │    [error]    |                                                                                                                                                       │
+ │    [error]    |implicit val ec: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionContext.global                                                          │
+ │    [error]    |                                                                                                                                                       │
+ │    [error]    |One of the following imports might fix the problem:                                                                                                    │
+ │    [error]    |                                                                                                                                                       │
+ │    [error]    |  import org.apache.pekko.actor.TypedActor.dispatcher                                                                                                  │
+ │    [error]    |  import concurrent.ExecutionContext.Implicits.global                                                                                                  │
+ │    [error]    |                                                                                                                                                       │
+ │    [error] -- [E049] Reference Error: /home/admindell/wingsai/wings_ai/wordle.scala:94:14 -                                                                           │
+ │    [error] 94 |      println(instructions)                                                                                                                            │
+ │    [error]    |              ^^^^^^^^^^^^                                                                                                                             │
+ │    [error]    |              Reference to instructions is ambiguous.                                                                                                  │
+ │    [error]    |              It is both defined in object WordleSolver$2                                                                                              │
+ │    [error]    |              and inherited subsequently in object WordleSolver$2                                                                                      │
+ │    [error]    |                                                                                                                                                       │
+ │    [error]    | longer explanation available when compiling with `-explain`                                                                                           │
+ │    [error] -- [E008] Not Found Error: /home/admindell/wingsai/wings_ai/wordle.scala:122:26                                                                            │
+ │    [error] 122 |              if (message.toLowerCase.contains("exceeded") || message.toLowerCase.contains("no game")) {                                              │
+ │    [error]     |                  ^^^^^^^^^^^^^^^^^^^                                                                                                                 │
+ │    [error]     |value toLowerCase is not a member of Option[String], but could be made available as an extension method.                                              │
+ │    [error]     |                                                                                                                                                      │
+ │    [error]     |The following import might make progress towards fixing the problem:                                                                                  │
+ │    [error]     |                                                                                                                                                      │
+ │    [error]     |  import org.apache.pekko.http.impl.util.JavaMapping.Implicits.convertToScala                                                                         │
+ │    [error]     |                                                                                                                                                      │
+ │    [error] -- [E008] Not Found Error: /home/admindell/wingsai/wings_ai/wordle.scala:125:54                                                                            │
+ │    [error] 125 |              } else if (feedback == null || feedback.length != 5) {                                                                                  │
+ │    [error]     |                                             ^^^^^^^^^^^^^^^                                                                                          │
+ │    [error]     |value length is not a member of Option[String], but could be made available as an extension method.                                                   │
+ │    [error]     |                                                                                                                                                      │
+ │    [error]     |The following import might make progress towards fixing the problem:                                                                                  │
+ │    [error]     |                                                                                                                                                      │
+ │    [error]     |  import org.apache.pekko.http.impl.util.JavaMapping.Implicits.convertToScala                                                                         │
+ │    [error]     |                                                                                                                                                      │
+ │    [error] -- [E008] Not Found Error: /home/admindell/wingsai/wings_ai/wordle.scala:129:29                                                                            │
+ │    [error] 129 |                if (feedback.toLowerCase == "ggggg") {                                                                                                │
+ │    [error]     |                    ^^^^^^^^^^^^^^^^^^^^                                                                                                              │
+ │    [error]     |value toLowerCase is not a member of Option[String], but could be made available as an extension method.                                              │
+ │    [error]     |                                                                                                                                                      │
+ │    [error]     |The following import might make progress towards fixing the problem:                                                                                  │
+ │    [error]     |                                                                                                                                                      │
+ │    [error]     |  import org.apache.pekko.http.impl.util.JavaMapping.Implicits.convertToScala                                                                         │
+ │    [error]     |                                                                                                                                                      │
+ │    [error] -- [E008] Not Found Error: /home/admindell/wingsai/wings_ai/wordle.scala:133:39                                                                            │
+ │    [error] 133 |                  filterWords(feedback.toLowerCase)                                                                                                   │
+ │    [error]     |                              ^^^^^^^^^^^^^^^^^^^^                                                                                                    │
+ │    [error]     |value toLowerCase is not a member of Option[String], but could be made available as an extension method.                                              │
+ │    [error]     |                                                                                                                                                      │
+ │    [error]     |The following import might make progress towards fixing the problem:                                                                                  │
+ │    [error]     |                                                                                                                                                      │
+ │    [error]     |  import org.apache.pekko.http.impl.util.JavaMapping.Implicits.convertToScala                                                                         │
+ │    [error]     |                                                                                                                                                      │
+ │    [error] -- [E049] Reference Error: /home/admindell/wingsai/wings_ai/wordle.scala:162:6 -                                                                           │
+ │    [error] 162 |      system.terminate()                                                                                                                              │
+ │    [error]     |      ^^^^^^                                                                                                                                          │
+ │    [error]     |      Reference to system is ambiguous.                                                                                                               │
+ │    [error]     |      It is both defined in object WordleSolver$2                                                                                                     │
+ │    [error]     |      and inherited subsequently in object WordleSolver$2                                                                                             │
+ │    [error]     |                                                                                                                                                      │
+ │    [error]     | longer explanation available when compiling with `-explain`                                                                                          │
+ │    [error] -- [E049] Reference Error: /home/admindell/wingsai/wings_ai/wordle.scala:165:6 -                                                                           │
+ │    [error] 165 |      system.terminate()                                                                                                                              │
+ │    [error]     |      ^^^^^^                                                                                                                                          │
+ │    [error]     |      Reference to system is ambiguous.                                                                                                               │
+ │    [error]     |      It is both defined in object WordleSolver$2                                                                                                     │
+ │    [error]     |      and inherited subsequently in object WordleSolver$2                                                                                             │
+ │    [error]     |                                                                                                                                                      │
+ │    [error]     | longer explanation available when compiling with `-explain`                                                                                          │
+ │    [error] 10 errors found                                                                                                                                            │
+ │    [error] (Compile / compileIncremental) Compilation failed                                                                                                          │
+ │    [error] Total time: 10 s, completed Sep 18, 2025, 3:24:53 PM                                                                                                       │
+ │                                                                                                                                                                       │
+ ╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+ ╭───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+ │ ✔  Shell rm wordle.scala                                                                                                                                              │
+ ╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+ ╭───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+ │ ✔  ReadFile src/main/scala/wordle.scala                                                                                                                               │
+ ╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+ ╭───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+ │ ✔  WriteFile Writing to src/main/scala/wordle.scala                                                                                                                   │
+ │                                                                                                                                                                       │
+ │    ... first 7 lines hidden ...                                                                                                                                       │
+ │      6   import scala.util.Random                                                                                                                                     │
+ │      7   import scala.collection.mutable.{Map as MutableMap}                                                                                                          │
+ │      8   import org.apache.pekko.http.scaladsl.Http                                                                                                                   │
+ │      9   import org.apache.pekko.http.scaladsl.client.RequestBuilding.Post                                                                                            │
+ │     10   import org.apache.pekko.http.scaladsl.model.{ContentTypes, HttpEntity, HttpMethods, HttpRequest, HttpResponse}                                               │
+ │     11   import org.apache.pekko.actor.{ActorSystem, ClassicActorSystemProvider}                                                                                      │
+ │     13 - import io.circe.parser.*                                                                                                                                     │
+ │     14 - import io.circe.generic.auto.*                                                                                                                               │
+ │     15 - import io.circe.syntax.*                                                                                                                                     │
+ │     12 + import io.circe.parser._                                                                                                                                     │
+ │     13 + import io.circe.generic.auto._                                                                                                                               │
+ │     14 + import io.circe.syntax._                                                                                                                                     │
+ │     15   import io.circe.{Decoder, Encoder, Json}                                                                                                                     │
+ │     16                                                                                                                                                                │
+ │     17   object WordleSolver:                                                                                                                                         │
+ │    ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════            │
+ │     64               println(s"Registered player '$playerName' with ID: $playerId")                                                                                   │
+ │     65               val solver = new WordleSolver(playerId, words)                                                                                                   │
+ │     66               solver.playUntilWin()                                                                                                                            │
+ │     67 +             summon[ActorSystem].terminate()                                                                                                                  │
+ │     68             case Failure(e) =>                                                                                                                                 │
+ │     69               println(s"Error registering player: $e")                                                                                                         │
+ │     70               summon[ActorSystem].terminate()                                                                                                                  │
+ │     71                                                                                                                                                                │
+ │     72                                                                                                                                                                │
+ │     73   class WordleSolver(playerId: String, allWords: Vector[String]):                                                                                              │
+ │     74 -   // Since this is in the same file, we can directly access the companion object members                                                                     │
+ │     75 -   // without a separate import statement.                                                                                                                    │
+ │     74     import WordleSolver.given_ClassicActorSystemProvider                                                                                                       │
+ │     77 -   import io.circe.syntax.*                                                                                                                                   │
+ │     75 +   import io.circe.syntax._                                                                                                                                   │
+ │     76                                                                                                                                                                │
+ │     77     private var availableWords = allWords                                                                                                                      │
+ │     78     private var attemptNum = 0                                                                                                                                 │
+ │     79     private var currentGuess = ""                                                                                                                              │
+ │     80                                                                                                                                                                │
+ │     83 -   // Use a secret word to simulate the game offline                                                                                                          │
+ │     84 -   private val secretWord = "ulnad"                                                                                                                           │
+ │     85 -                                                                                                                                                              │
+ │     81     private def startGame(): Unit =                                                                                                                            │
+ │     82       val requestBody = WordleSolver.CreateGameRequest(playerId, overwrite = true).asJson.noSpaces                                                             │
+ │     83       val request = HttpRequest(                                                                                                                               │
+ │    ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════            │
+ │     96         case Failure(e) =>                                                                                                                                     │
+ │     97           println(s"Game creation failed: $e")                                                                                                                 │
+ │     98                                                                                                                                                                │
+ │    104 -     // Reset word list for the new game                                                                                                                      │
+ │     99       availableWords = allWords                                                                                                                                │
+ │    100       attemptNum = 0                                                                                                                                           │
+ │    101                                                                                                                                                                │
+ │    ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════            │
+ │    108 -   // New function to simulate feedback based on a secret word                                                                                                │
+ │    109 -   private def getSimulatedFeedback(guess: String, secret: String): String =                                                                                  │
+ │    110 -     val feedback = Array.fill(5)('r')                                                                                                                        │
+ │    111 -     val secretLetters = secret.toBuffer                                                                                                                      │
+ │    112 -                                                                                                                                                              │
+ │    113 -     // First pass: find greens                                                                                                                               │
+ │    114 -     for i <- 0 until 5 do                                                                                                                                    │
+ │    115 -       if guess(i) == secret(i) then                                                                                                                          │
+ │    116 -         feedback(i) = 'g'                                                                                                                                    │
+ │    117 -         secretLetters.remove(secretLetters.indexOf(guess(i)))                                                                                                │
+ │    118 -                                                                                                                                                              │
+ │    119 -     // Second pass: find yellows                                                                                                                             │
+ │    120 -     for i <- 0 until 5 do                                                                                                                                    │
+ │    121 -       if feedback(i) == 'r' && secretLetters.contains(guess(i)) then                                                                                         │
+ │    122 -         feedback(i) = 'y'                                                                                                                                    │
+ │    123 -         secretLetters.remove(secretLetters.indexOf(guess(i)))                                                                                                │
+ │    124 -                                                                                                                                                              │
+ │    125 -     feedback.mkString                                                                                                                                        │
+ │    126 -                                                                                                                                                              │
+ │    102     private def filterWords(feedback: String): Unit =                                                                                                          │
+ │    103       def dropBlacks(blacks: String, word: String): Boolean = blacks.forall(b => !word.contains(b))                                                            │
+ │    104       def pickGreens(greens: Vector[Char], word: String): Boolean = (0 until 5).forall(i => greens(i) == ' ' || word(i) == greens(i))                          │
+ │    ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════            │
+ │    116           case 'g' => greens(i) = guessChar                                                                                                                    │
+ │    117           case 'y' => ambers.updateWith(guessChar)(existing => Some(existing.getOrElse(Vector.empty) :+ i))                                                    │
+ │    118           case 'r' => blacks.append(guessChar)                                                                                                                 │
+ │    ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════            │
+ │    144 -         case _ => // Do nothing for invalid feedback characters                                                                                              │
+ │    119 +         case _ =>                                                                                                                                            │
+ │    120                                                                                                                                                                │
+ │    121       availableWords = availableWords.filter { word =>                                                                                                         │
+ │    122         dropBlacks(blacks.toString, word) && pickGreens(greens.toVector, word) && pickAmbers(ambers, word)                                                     │
+ │    124                                                                                                                                                                │
+ │    125     def playUntilWin(): Unit =                                                                                                                                 │
+ │    126       println(WordleSolver.instructions)                                                                                                                       │
+ │    ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════            │
+ │    152 -     println(s"📝 Starting a new simulated game with secret word: $secretWord")                                                                               │
+ │    127 +     startGame()                                                                                                                                              │
+ │    128                                                                                                                                                                │
+ │    ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════            │
+ │    154 -     // No need to call startGame() if we're simulating feedback                                                                                              │
+ │    155 -     availableWords = allWords                                                                                                                                │
+ │    156 -     attemptNum = 0                                                                                                                                           │
+ │    157 -                                                                                                                                                              │
+ │    158 -     while true do                                                                                                                                            │
+ │    129 +     var status = "PLAY"                                                                                                                                      │
+ │    130 +     while status != "WON" do                                                                                                                                 │
+ │    131         if availableWords.isEmpty then                                                                                                                         │
+ │    ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════            │
+ │    160 -         println("⚠️ Ran out of candidate words — something is wrong. Restarting simulation.")                                                                │
+ │    161 -         availableWords = allWords                                                                                                                            │
+ │    162 -         attemptNum = 0                                                                                                                                       │
+ │    163 -         if availableWords.isEmpty then                                                                                                                       │
+ │    164 -           println("Error: The initial word list is empty. Cannot continue.")                                                                                 │
+ │    165 -           return                                                                                                                                             │
+ │    166 -                                                                                                                                                              │
+ │    132 +         println("⚠️ Ran out of candidate words — restarting game.")                                                                                          │
+ │    133 +         startGame()                                                                                                                                          │
+ │    134 +       else                                                                                                                                                   │
+ │    135           val shuffledWords = Random.shuffle(availableWords)                                                                                                   │
+ │    136           currentGuess = shuffledWords.head                                                                                                                    │
+ │    137           availableWords = shuffledWords.tail                                                                                                                  │
+ │    138           attemptNum += 1                                                                                                                                      │
+ │    139           println(s"\nAttempt $attemptNum: Is it '$currentGuess'?")                                                                                            │
+ │    140                                                                                                                                                                │
+ │    ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════            │
+ │    173 -       // Simulate the feedback instead of calling the server                                                                                                 │
+ │    174 -       val feedback = getSimulatedFeedback(currentGuess, secretWord)                                                                                          │
+ │    175 -       println(s"Feedback: $feedback")                                                                                                                        │
+ │    141 +         val guessRequest = WordleSolver.GuessRequest(currentGuess, playerId).asJson.noSpaces                                                                 │
+ │    142 +         val request = HttpRequest(                                                                                                                           │
+ │    143 +           method = HttpMethods.POST,                                                                                                                         │
+ │    144 +           uri = "https://wordle.we4shakthi.in/game/guess",                                                                                                   │
+ │    145 +           entity = HttpEntity(ContentTypes.`application/json`, guessRequest)                                                                                 │
+ │    146 +         )                                                                                                                                                    │
+ │    147                                                                                                                                                                │
+ │    ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════            │
+ │    177 -       if feedback.toLowerCase.forall(_ == 'g') then                                                                                                          │
+ │    148 +         Try(Await.result(Http().singleRequest(request), 10.seconds))                                                                                         │
+ │    149 +           .flatMap { response =>                                                                                                                             │
+ │    150 +             response.status match                                                                                                                            │
+ │    151 +               case status if status.isSuccess =>                                                                                                             │
+ │    152 +                 Try(Await.result(response.entity.toStrict(10.seconds), 10.seconds))                                                                          │
+ │    153 +                   .flatMap(strictEntity => decode[WordleSolver.GuessResponse](strictEntity.data.utf8String).toTry)                                           │
+ │    154 +               case status =>                                                                                                                                 │
+ │    155 +                 Failure(new RuntimeException(s"Guess request failed: HTTP ${status.intValue}"))                                                              │
+ │    156 +           } match {                                                                                                                                          │
+ │    157 +             case Success(guessResponse) =>                                                                                                                   │
+ │    158 +               val feedback = guessResponse.feedback.getOrElse("")                                                                                            │
+ │    159 +               val message = guessResponse.message.getOrElse("No message")                                                                                    │
+ │    160 +               println(s"Message: $message")                                                                                                                  │
+ │    161 +                                                                                                                                                              │
+ │    162 +               if message.toLowerCase.contains("exceeded") || message.toLowerCase.contains("no game") then                                                    │
+ │    163 +                 println("🔁 Restarting a new game due to server limit.")                                                                                     │
+ │    164 +                 startGame()                                                                                                                                  │
+ │    165 +               else if feedback.length != 5 then                                                                                                              │
+ │    166 +                 println("⚠️ Invalid feedback, skipping...")                                                                                                  │
+ │    167 +               else                                                                                                                                           │
+ │    168 +                 println(s"Feedback: $feedback")                                                                                                              │
+ │    169 +                 if feedback.toLowerCase == "ggggg" then                                                                                                      │
+ │    170                     println(s"\n🎉 The computer guessed the correct word '$currentGuess' in $attemptNum attempts!")                                            │
+ │    ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════            │
+ │    179 -         return // Exit the loop on win                                                                                                                       │
+ │    171 +                   status = "WON"                                                                                                                             │
+ │    172                   else                                                                                                                                         │
+ │    ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════            │
+ │    181 -         filterWords(feedback)                                                                                                                                │
+ │    173 +                   filterWords(feedback.toLowerCase)                                                                                                          │
+ │    174 +             case Failure(e) =>                                                                                                                               │
+ │    175 +               println(s"❌ Error decoding JSON or making request:  $e")                                                                                       │
+ │    176 +           }                                                                                                                                                  │
+ ╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+ℹ Request cancelled.
+ 
+ ╭───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+ │ -  Shell sbt run                                                                                                                                                      │
+ ╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+╭────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│  > please give correct output and donot give infinite loop guesses and give with correct feedback  │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+ ╭───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+ │ ✔  ReadFile src/main/scala/wordle.scala                                                                                                                               │
+ ╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+ ╭───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+ │ ✔  WriteFile Writing to src/main/scala/wordle.scala                                                                                                                   │
+ │                                                                                                                                                                       │
+ │      1 +                                                                                                                                                              │
+ │      2 +                                                                                                                                                              │
+ │      3   import scala.io.Source                                                                                                                                       │
+ │      4   import scala.util.{Failure, Success, Try}                                                                                                                    │
+ │      5   import scala.concurrent.ExecutionContext.Implicits.global                                                                                                    │
+ │    ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════            │
+ │     77     import io.circe.syntax._                                                                                                                                   │
+ │     78                                                                                                                                                                │
+ │     79     private var availableWords = allWords                                                                                                                      │
+ │     80 +   private var guessedWords = Set[String]()                                                                                                                   │
+ │     81     private var attemptNum = 0                                                                                                                                 │
+ │     82     private var currentGuess = ""                                                                                                                              │
+ │     83 +   private var restarts = 0                                                                                                                                   │
+ │     84                                                                                                                                                                │
+ │     85     private def startGame(): Unit =                                                                                                                            │
+ │     86       val requestBody = WordleSolver.CreateGameRequest(playerId, overwrite = true).asJson.noSpaces                                                             │
+ │    ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════            │
+ │    101           println(s"Game creation failed: $e")                                                                                                                 │
+ │    102                                                                                                                                                                │
+ │    103       availableWords = allWords                                                                                                                                │
+ │    104 +     guessedWords = Set()                                                                                                                                     │
+ │    105       attemptNum = 0                                                                                                                                           │
+ │    106                                                                                                                                                                │
+ │    107     private def filterWords(feedback: String): Unit =                                                                                                          │
+ │    108       def dropBlacks(blacks: String, word: String): Boolean = blacks.forall(b => !word.contains(b))                                                            │
+ │    109       def pickGreens(greens: Vector[Char], word: String): Boolean = (0 until 5).forall(i => greens(i) == ' ' || word(i) == greens(i))                          │
+ │    105 -     def pickAmbers(ambers: MutableMap[Char, Vector[Int]], word: String): Boolean =                                                                           │
+ │    106 -       ambers.forall { case (ch, badPositions) => word.contains(ch) && !badPositions.exists(pos => word(pos) == ch) }                                         │
+ │    110 +     def pickAmbers(ambers: MutableMap[Char, Vector[Int]], word:.String): Boolean = ambers.forall { case (ch, badPositions) => word.contains(ch)              │
+ │        && !badPositions.exists(pos => word(pos) == ch) }                                                                                                              │
+ │    111                                                                                                                                                                │
+ │    112       val greens = Vector.fill(5)(' ').toBuffer                                                                                                                │
+ │    113       val blacks = new StringBuilder                                                                                                                           │
+ │    ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════            │
+ │    131       startGame()                                                                                                                                              │
+ │    132                                                                                                                                                                │
+ │    133       var status = "PLAY"                                                                                                                                      │
+ │    130 -     while status != "WON" do                                                                                                                                 │
+ │    134 +     while status != "WON" && restarts < 5 do                                                                                                                 │
+ │    135         if availableWords.isEmpty then                                                                                                                         │
+ │    136           println("⚠️ Ran out of candidate words — restarting game.")                                                                                          │
+ │    137 +         restarts += 1                                                                                                                                        │
+ │    138           startGame()                                                                                                                                          │
+ │    139         else                                                                                                                                                   │
+ │    135 -         val shuffledWords = Random.shuffle(availableWords)                                                                                                   │
+ │    136 -         currentGuess = shuffledWords.head                                                                                                                    │
+ │    137 -         availableWords = shuffledWords.tail                                                                                                                  │
+ │    140 +         val nextGuess = Random.shuffle(availableWords.filterNot(guessedWords.contains)).headOption                                                           │
+ │    141 +         nextGuess match                                                                                                                                      │
+ │    142 +           case Some(guess) =>                                                                                                                                │
+ │    143 +             currentGuess = guess                                                                                                                             │
+ │    144 +             guessedWords += guess                                                                                                                            │
+ │    145               attemptNum += 1                                                                                                                                  │
+ │    146               println(s"\nAttempt $attemptNum: Is it '$currentGuess'?")                                                                                        │
+ │    147                                                                                                                                                                │
+ │    ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════            │
+ │    168                                                                                                                                                                │
+ │    169                     if message.toLowerCase.contains("exceeded") || message.toLowerCase.contains("no game") then                                                │
+ │    170                       println("🔁 Restarting a new game due to server limit.")                                                                                 │
+ │    171 +                     restarts += 1                                                                                                                            │
+ │    172                       startGame()                                                                                                                              │
+ │    173                     else if feedback.length != 5 then                                                                                                          │
+ │    174                       println("⚠️ Invalid feedback, skipping...")                                                                                              │
+ │    ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════            │
+ │    182                   case Failure(e) =>                                                                                                                           │
+ │    183                     println(s"❌ Error decoding JSON or making request:  $e")                                                                                   │
+ │    184                 }                                                                                                                                              │
+ │    185 +           case None =>                                                                                                                                       │
+ │    186 +             println("⚠️ Ran out of unique candidate words — restarting game.")                                                                               │
+ │    187 +             restarts += 1                                                                                                                                    │
+ │    188 +             startGame()                                                                                                                                      │
+ │    189 +                                                                                                                                                              │
+ ╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+ ╭───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+ │ ✔  Shell sbt run                                                                                                                                                      │
+ │                                                                                                                                                                       │
+ │    [info] welcome to sbt 1.11.6 (Ubuntu Java 21.0.8)                                                                                                                  │
+ │    [info] loading project definition from /home/admindell/wingsai/wings_ai/project                                                                                    │
+ │    [info] loading settings for project root from build.sbt...                                                                                                         │
+ │    [info] set current project to wordle-solver (in build file:/home/admindell/wingsai/wings_ai/)                                                                      │
+ │    [info] compiling 1 Scala source to /home/admindell/wingsai/wings_ai/target/scala-3.3.1/classes ...                                                                 │
+ │    [error] -- [E040] Syntax Error: /home/admindell/wingsai/wings_ai/src/main/scala/wordle.scala:110:63                                                                │
+ │    [error] 110 |    def pickAmbers(ambers: MutableMap[Char, Vector[Int]], word:.String): Boolean = ambers.forall { case (ch, badPositions) =>                         │
+ │    word.contains(ch) && !badPositions.exists(pos => word(pos) == ch) }                                                                                                │
+ │    [error]     |                                                               ^                                                                                      │
+ │    [error]     |                                 an identifier expected, but '.' found                                                                                │
+ │    [error] one error found                                                                                                                                            │
+ │    [error] (Compile / compileIncremental) Compilation failed                                                                                                          │
+ │    [error] Total time: 3 s, completed Sep 18, 2025, 3:28:43 PM                                                                                                        │
+ │                                                                                                                                                                       │
+ ╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+ ╭───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+ │ ✔  Edit src/main/scala/wordle.scala:     def pickAmbers(ambers: Mut... =>     def pickAmbers(ambers: Mut...                                                           │
+ │                                                                                                                                                                       │
+ │    107   private def filterWords(feedback: String): Unit =                                                                                                            │
+ │    108     def dropBlacks(blacks: String, word: String): Boolean = blacks.forall(b => !word.contains(b))                                                              │
+ │    109     def pickGreens(greens: Vector[Char], word: String): Boolean = (0 until 5).forall(i => greens(i) == ' ' || word(i) == greens(i))                            │
+ │    110 -   def pickAmbers(ambers: MutableMap[Char, Vector[Int]], word:.String): Boolean = ambers.forall { case (ch, badPositions) => word.contains(ch) &&             │
+ │        !badPositions.exists(pos => word(pos) == ch) }                                                                                                                 │
+ │    110 +   def pickAmbers(ambers: MutableMap[Char, Vector[Int]], word: String): Boolean = ambers.forall { case (ch, badPositions) => word.contains(ch) &&             │
+ │        !badPositions.exists(pos => word(pos) == ch) }                                                                                                                 │
+ │    111                                                                                                                                                                │
+ │    112     val greens = Vector.fill(5)(' ').toBuffer                                                                                                                  │
+ │    113     val blacks = new StringBuilder                                                                                                                             │
+ ╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+ℹ Request cancelled.
+ 
+ ╭───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+ │ -  Shell sbt run                                                                                                                                                      │
+ ╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+╭─────────────────────────────────────────╮
+│  > please donot give infinte apptempts  │
+╰─────────────────────────────────────────╯
+
+ ╭───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+ │ ✔  ReadFile src/main/scala/wordle.scala                                                                                                                               │
+ ╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+ ╭───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+ │ ✔  WriteFile Writing to src/main/scala/wordle.scala                                                                                                                   │
+ │                                                                                                                                                                       │
+ │      1 -                                                                                                                                                              │
+ │      2 -                                                                                                                                                              │
+ │      1   import scala.io.Source                                                                                                                                       │
+ │      2   import scala.util.{Failure, Success, Try}                                                                                                                    │
+ │      3   import scala.concurrent.ExecutionContext.Implicits.global                                                                                                    │
+ │    ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════            │
+ │     64               println(s"Registered player '$playerName' with ID: $playerId")                                                                                   │
+ │     65               val solver = new WordleSolver(playerId, words)                                                                                                   │
+ │     66               solver.playUntilWin()                                                                                                                            │
+ │     69 -             summon[ActorSystem].terminate()                                                                                                                  │
+ │     67             case Failure(e) =>                                                                                                                                 │
+ │     68               println(s"Error registering player: $e")                                                                                                         │
+ │     69           summon[ActorSystem].terminate()                                                                                                                      │
+ │    ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════            │
+ │     77     private var guessedWords = Set[String]()                                                                                                                   │
+ │     78     private var attemptNum = 0                                                                                                                                 │
+ │     79     private var currentGuess = ""                                                                                                                              │
+ │     83 -   private var restarts = 0                                                                                                                                   │
+ │     80                                                                                                                                                                │
+ │     81     private def startGame(): Unit =                                                                                                                            │
+ │     82       val requestBody = WordleSolver.CreateGameRequest(playerId, overwrite = true).asJson.noSpaces                                                             │
+ │    ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════            │
+ │    127       startGame()                                                                                                                                              │
+ │    128                                                                                                                                                                │
+ │    129       var status = "PLAY"                                                                                                                                      │
+ │    134 -     while status != "WON" && restarts < 5 do                                                                                                                 │
+ │    130 +     while status != "WON" do                                                                                                                                 │
+ │    131         if availableWords.isEmpty then                                                                                                                         │
+ │    136 -         println("⚠️ Ran out of candidate words — restarting game.")                                                                                          │
+ │    137 -         restarts += 1                                                                                                                                        │
+ │    138 -         startGame()                                                                                                                                          │
+ │    132 +         println("🛑 No more words to guess. The solver could not find the word.")                                                                            │
+ │    133 +         status = "LOST"                                                                                                                                      │
+ │    134         else                                                                                                                                                   │
+ │    135           val nextGuess = Random.shuffle(availableWords.filterNot(guessedWords.contains)).headOption                                                           │
+ │    136           nextGuess match                                                                                                                                      │
+ │    ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════            │
+ │    162                     println(s"Message: $message")                                                                                                              │
+ │    163                                                                                                                                                                │
+ │    164                     if message.toLowerCase.contains("exceeded") || message.toLowerCase.contains("no game") then                                                │
+ │    170 -                     println("🔁 Restarting a new game due to server limit.")                                                                                 │
+ │    171 -                     restarts += 1                                                                                                                            │
+ │    172 -                     startGame()                                                                                                                              │
+ │    165 +                     println("🔁 The game has ended on the server.")                                                                                          │
+ │    166 +                     status = "LOST"                                                                                                                          │
+ │    167                     else if feedback.length != 5 then                                                                                                          │
+ │    168                       println("⚠️ Invalid feedback, skipping...")                                                                                              │
+ │    169                     else                                                                                                                                       │
+ │    173                         status = "WON"                                                                                                                         │
+ │    174                       else                                                                                                                                     │
+ │    175                         filterWords(feedback.toLowerCase)                                                                                                      │
+ │    176 +                       if availableWords.isEmpty then                                                                                                         │
+ │    177 +                         println("🛑 No more words to guess after filtering. The solver could not find the word.")                                            │
+ │    178 +                         status = "LOST"                                                                                                                      │
+ │    179                   case Failure(e) =>                                                                                                                           │
+ │    180                     println(s"❌ Error decoding JSON or making request:  $e")                                                                                   │
+ │    181 +                   status = "LOST"                                                                                                                            │
+ │    182                 }                                                                                                                                              │
+ │    183             case None =>                                                                                                                                       │
+ │    186 -             println("⚠️ Ran out of unique candidate words — restarting game.")                                                                               │
+ │    187 -             restarts += 1                                                                                                                                    │
+ │    188 -             startGame()                                                                                                                                      │
+ │    189 -                                                                                                                                                              │
+ │    184 +             println("🛑 No more unique words to guess. The solver could not find the word.")                                                                 │
+ │    185 +             status = "LOST"                                                                                                                                  │
+ ╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+ℹ Request cancelled.
+ 
+ ╭───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+ │ -  Shell sbt run                                                                                                                                                      │
+ ╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+╭─────────────────────────────────────────────────────────────────────────────────────────────╮
+│  > agin your are giving same output please give me right output without infiite guess loop  │
+╰─────────────────────────────────────────────────────────────────────────────────────────────╯
+
+ ╭───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+ │ ✔  WriteFile Writing to src/main/scala/wordle.scala                                                                                                                   │
+ │                                                                                                                                                                       │
+ │      1 +                                                                                                                                                              │
+ │      2 +                                                                                                                                                              │
+ │      3   import scala.io.Source                                                                                                                                       │
+ │      4   import scala.util.{Failure, Success, Try}                                                                                                                    │
+ │      5   import scala.concurrent.ExecutionContext.Implicits.global                                                                                                    │
+ │    ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════            │
+ │    103       attemptNum = 0                                                                                                                                           │
+ │    104                                                                                                                                                                │
+ │    105     private def filterWords(feedback: String): Unit =                                                                                                          │
+ │    106 +     val beforeCount = availableWords.size                                                                                                                    │
+ │    107       def dropBlacks(blacks: String, word: String): Boolean = blacks.forall(b => !word.contains(b))                                                            │
+ │    108       def pickGreens(greens: Vector[Char], word: String): Boolean = (0 until 5).forall(i => greens(i) == ' ' || word(i) == greens(i))                          │
+ │    109       def pickAmbers(ambers: MutableMap[Char, Vector[Int]], word: String): Boolean = ambers.forall { case (ch, badPositions) => word.contains(ch)              │
+ │          && !badPositions.exists(pos => word(pos) == ch) }                                                                                                            │
+ │    110                                                                                                                                                                │
+ │    111       val greens = Vector.fill(5)(' ').toBuffer                                                                                                                │
+ │    112       val blacks = new StringBuilder                                                                                                                           │
+ │    110 -     val ambers = MutableMap.empty[Char, Vector[Int]]                                                                                                         │
+ │    113 +     val ambers = MutableMap.empty[Char, Vector[Int}]                                                                                                         │
+ │    114                                                                                                                                                                │
+ │    115       for i <- 0 until 5 do                                                                                                                                    │
+ │    116         val feedbackChar = feedback(i).toLower                                                                                                                 │
+ │    117         val guessChar = currentGuess(i)                                                                                                                        │
+ │    118         feedbackChar match                                                                                                                                     │
+ │    119           case 'g' => greens(i) = guessChar                                                                                                                    │
+ │    117 -         case 'y' => ambers.updateWith(guessChar)(existing => Some(existing.getOrElse(Vector.empty) :+ i))                                                    │
+ │    120 +         case 'y' => ambers..updateWith(guessChar)(existing => Some(existing.getOrElse(Vector.empty) :+ i))                                                   │
+ │    121           case 'r' => blacks.append(guessChar)                                                                                                                 │
+ │    122           case _ =>                                                                                                                                            │
+ │    123                                                                                                                                                                │
+ │    124       availableWords = availableWords.filter { word =>                                                                                                         │
+ │    125         dropBlacks(blacks.toString, word) && pickGreens(greens.toVector, word) && pickAmbers(ambers, word)                                                     │
+ │    126       }                                                                                                                                                        │
+ │    127 +     val afterCount = availableWords.size                                                                                                                     │
+ │    128 +     println(s"[DEBUG] Words filtered: $beforeCount -> $afterCount")                                                                                          │
+ │    129                                                                                                                                                                │
+ │    130     def playUntilWin(): Unit =                                                                                                                                 │
+ │    131       println(WordleSolver.instructions)                                                                                                                       │
+ │    132       startGame()                                                                                                                                              │
+ │    133                                                                                                                                                                │
+ │    134       var status = "PLAY"                                                                                                                                      │
+ │    130 -     while status != "WON" do                                                                                                                                 │
+ │    135 +     while status == "PLAY" do                                                                                                                                │
+ │    136         if availableWords.isEmpty then                                                                                                                         │
+ │    137           println("🛑 No more words to guess. The solver could not find the word.")                                                                            │
+ │    138           status = "LOST"                                                                                                                                      │
+ │    ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════            │
+ │    188             case None =>                                                                                                                                       │
+ │    189               println("🛑 No more unique words to guess. The solver could not find the word.")                                                                 │
+ │    190               status = "LOST"                                                                                                                                  │
+ │    191 +                                                                                                                                                              │
+ ╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+ ╭───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+ │ ✔  Shell sbt run                                                                                                                                                      │
+ │                                                                                                                                                                       │
+ │    [info] welcome to sbt 1.11.6 (Ubuntu Java 21.0.8)                                                                                                                  │
+ │    [info] loading project definition from /home/admindell/wingsai/wings_ai/project                                                                                    │
+ │    [info] loading settings for project root from build.sbt...                                                                                                         │
+ │    [info] set current project to wordle-solver (in build file:/home/admindell/wingsai/wings_ai/)                                                                      │
+ │    [info] compiling 1 Scala source to /home/admindell/wingsai/wings_ai/target/scala-3.3.1/classes ...                                                                 │
+ │    [error] -- [E040] Syntax Error: /home/admindell/wingsai/wings_ai/src/main/scala/wordle.scala:113:50                                                                │
+ │    [error] 113 |    val ambers = MutableMap.empty[Char, Vector[Int}]                                                                                                  │
+ │    [error]     |                                                  ^                                                                                                   │
+ │    [error]     |                                           ']' expected, but '}' found                                                                                │
+ │    [error] -- [E008] Not Found Error: /home/admindell/wingsai/wings_ai/src/main/scala/wordle.scala:68:19                                                              │
+ │    [error] 68 |            solver.playUntilWin()                                                                                                                      │
+ │    [error]    |            ^^^^^^^^^^^^^^^^^^^                                                                                                                        │
+ │    [error]    |value playUntilWin is not a member of WordleSolver, but could be made available as an extension method.                                                │
+ │    [error]    |                                                                                                                                                       │
+ │    [error]    |The following import might make progress towards fixing the problem:                                                                                   │
+ │    [error]    |                                                                                                                                                       │
+ │    [error]    |  import org.apache.pekko.http.impl.util.JavaMapping.Implicits.convertToScala                                                                          │
+ │    [error]    |                                                                                                                                                       │
+ │    [error] two errors found                                                                                                                                           │
+ │    [error] (Compile / compileIncremental) Compilation failed                                                                                                          │
+ │    [error] Total time: 7 s, completed Sep 18, 2025, 3:32:31 PM                                                                                                        │
+ │                                                                                                                                                                       │
+ ╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+ ╭───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+ │ ✔  Edit src/main/scala/wordle.scala:         case 'y' => ambers..up... =>         case 'y' => ambers.upd...                                                           │
+ │                                                                                                                                                                       │
+ │    117   val guessChar = currentGuess(i)                                                                                                                              │
+ │    118   feedbackChar match                                                                                                                                           │
+ │    119     case 'g' => greens(i) = guessChar                                                                                                                          │
+ │    120 -   case 'y' => ambers..updateWith(guessChar)(existing => Some(existing.getOrElse(Vector.empty) :+ i))                                                         │
+ │    120 +   case 'y' => ambers.updateWith(guessChar)(existing => Some(existing.getOrElse(Vector.empty) :+ i))                                                          │
+ │    121     case 'r' => blacks.append(guessChar)                                                                                                                       │
+ │    122     case _ =>                                                                                                                                                  │
+ │    123                                                                                                                                                                │
+ ╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+ ╭───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+ │ ✔  Shell sbt clean                                                                                                                                                    │
+ │                                                                                                                                                                       │
+ │    [info] welcome to sbt 1.11.6 (Ubuntu Java 21.0.8)                                                                                                                  │
+ │    [info] loading project definition from /home/admindell/wingsai/wings_ai/project                                                                                    │
+ │    [info] loading settings for project root from build.sbt...                                                                                                         │
+ │    [info] set current project to wordle-solver (in build file:/home/admindell/wingsai/wings_ai/)                                                                      │
+ │    [success] Total time: 0 s, completed Sep 18, 2025, 3:32:57 PM                                                                                                      │
+ │                                                                                                                                                                       │
+ ╰──────────────────────────────────────────────────
