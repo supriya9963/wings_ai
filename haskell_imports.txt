@@ -1,0 +1,56 @@
+Language Extension
+
+{-# LANGUAGE OverloadedStrings #-}
+→ Allows string literals (like "wordle") to be interpreted as different string-like types (Text, ByteString, etc.) instead of just String.
+
+🔹 ByteString & Text
+
+import qualified Data.ByteString.Lazy.Char8 as LBS
+→ Lazy ByteString operations, useful for handling JSON HTTP responses (responseBody).
+
+import qualified Data.Text as T
+→ Efficient Unicode text handling (immutable, optimized). Used for words and feedback.
+
+import qualified Data.Text.IO as TIO
+→ Reading and writing Text from files (used to load 5words.txt).
+
+🔹 Utility & Randomness
+
+import Data.Maybe (fromMaybe)
+→ Helpers for working with Maybe values (defaulting, extraction).
+
+import System.Random (randomRIO)
+→ Generate random numbers in a given range (used to pick random guess words).
+
+🔹 HTTP Client
+
+import Network.HTTP.Client
+→ Low-level HTTP client (building requests, sending them, handling cookies).
+
+import Network.HTTP.Client.TLS (tlsManagerSettings)
+→ Provides TLS/HTTPS support for http-client (needed for https:// Wordle API).
+
+🔹 JSON (Aeson library)
+
+import Data.Aeson
+→ Encode/decode JSON, build JSON objects (object, .= operator, encode, eitherDecode).
+
+import Data.Aeson.Types (parseMaybe, parseEither)
+→ Helpers to extract fields from JSON (.: for parsing keys safely).
+
+🔹 Exception Handling
+
+import Control.Exception (catch, SomeException)
+→ Catch runtime/network/IO errors safely instead of crashing.
+
+✅ Summary
+
+Text/ByteString → Efficient string handling for input/output and API payloads.
+
+Random → Choose random words for guessing.
+
+HTTP Client + TLS → Make secure API requests to Wordle server.
+
+Aeson → Encode requests, decode responses from JSON.
+
+Exception Handling → Handle IO/network errors gracefully.
